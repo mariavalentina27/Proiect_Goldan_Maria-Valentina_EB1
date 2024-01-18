@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Proiect_Goldan_Maria_Valentina.Data;
 using Proiect_Goldan_Maria_Valentina.Models.LibraryViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Proiect_Goldan_Maria_Valentina.Controllers
 {
@@ -28,6 +29,7 @@ namespace Proiect_Goldan_Maria_Valentina.Controllers
             return View();
         }
 
+        [Authorize]
 		public IActionResult Chat()
 		{
 			return View();
