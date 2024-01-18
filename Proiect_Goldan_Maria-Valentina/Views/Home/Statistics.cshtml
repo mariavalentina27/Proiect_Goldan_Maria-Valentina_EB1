@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Proiect_Goldan_Maria_Valentina.Models.LibraryViewModels.PurchaseGroup>
+
+@{
+    ViewData["Title"] = "Purchased Concerts Statistics";
+}
+
+<h1>Statistics</h1>
+
+<h2>Purchased Concerts Statistics</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Purchase Date
+            </th>
+            <th>
+                Purchased Concerts
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PurchaseDate)
+                </td>
+                <td>
+                    @item.ConcertCount
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

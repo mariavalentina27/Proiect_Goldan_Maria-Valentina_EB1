@@ -12,5 +12,6 @@ namespace Proiect_Goldan_Maria_Valentina.Models
 		[Column(TypeName = "decimal(6, 2)")]
 		public decimal Price { get; set; }
 		public ICollection<Purchase>? Purchases { get; set; }
+		public ICollection<VenueConcert>? VenueConcerts { get; set; }
 	}
 }
