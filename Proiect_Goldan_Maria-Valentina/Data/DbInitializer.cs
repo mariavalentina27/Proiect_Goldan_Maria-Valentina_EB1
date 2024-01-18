@@ -43,12 +43,12 @@ namespace Proiect_Goldan_Maria_Valentina.Data
 
 				var purchases = new Purchase[]
 				{
-					new Purchase{ConcertID=10,CustomerID=7,OrderDate=DateTime.Parse("2023-12-25")},
-					new Purchase{ConcertID=11,CustomerID=8,OrderDate=DateTime.Parse("2023-12-26")},
-					new Purchase{ConcertID=12,CustomerID=9,OrderDate=DateTime.Parse("2023-12-27")},
-					new Purchase{ConcertID=10,CustomerID=9,OrderDate=DateTime.Parse("2023-12-28")},
-					new Purchase{ConcertID=11,CustomerID=7,OrderDate=DateTime.Parse("2023-12-29")},
-					new Purchase{ConcertID=12,CustomerID=8,OrderDate=DateTime.Parse("2023-12-30")},
+					new Purchase{ConcertID=10,CustomerID=7,PurchaseDate=DateTime.Parse("2023-12-25")},
+					new Purchase{ConcertID=11,CustomerID=8,PurchaseDate=DateTime.Parse("2023-12-26")},
+					new Purchase{ConcertID=12,CustomerID=9,PurchaseDate=DateTime.Parse("2023-12-27")},
+					new Purchase{ConcertID=10,CustomerID=9,PurchaseDate=DateTime.Parse("2023-12-28")},
+					new Purchase{ConcertID=11,CustomerID=7,PurchaseDate=DateTime.Parse("2023-12-29")},
+					new Purchase{ConcertID=12,CustomerID=8,PurchaseDate=DateTime.Parse("2023-12-30")},
 				};
 				foreach (Purchase p in purchases)
 				{

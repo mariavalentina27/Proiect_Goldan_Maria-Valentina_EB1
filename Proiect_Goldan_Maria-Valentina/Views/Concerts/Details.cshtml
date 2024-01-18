@@ -28,6 +28,24 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
+        <dt class="col-sm-2"> 
+            @Html.DisplayNameFor(model => model.Purchases) 
+        </dt>
+        <dd class="col-sm-10"> 
+            <table class="table"> 
+                <tr> 
+                    <th>Customer</th> 
+                    <th>Purchase Date</th> 
+                </tr> 
+                @foreach (var item in Model.Purchases)
+                {
+                    <tr> 
+                        <td> @Html.DisplayFor(modelItem => item.Customer.Name) </td> 
+                        <td> @Html.DisplayFor(modelItem => item.PurchaseDate) </td> 
+                    </tr>
+                } 
+            </table>
+        </dd>
     </dl>
 </div>
 <div>
