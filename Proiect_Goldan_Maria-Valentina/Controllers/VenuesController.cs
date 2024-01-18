@@ -102,47 +102,107 @@ namespace Proiect_Goldan_Maria_Valentina.Controllers
                 return NotFound();
             }
 
-            var venue = await _context.Venues.FindAsync(id);
+            var venue = await _context.Venues
+                .Include(p => p.VenueConcerts)
+                .ThenInclude(p => p.Concert)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
             if (venue == null)
             {
                 return NotFound();
             }
+
+            PopulateVenueConcertData(venue);
+
             return View(venue);
         }
 
-        // POST: Venues/Edit/5
+        private void PopulateVenueConcertData(Venue venue)
+        {
+            var allConcerts = _context.Concerts;
+            var venueConcerts = new HashSet<int>(venue.VenueConcerts.Select(c => c.ConcertID));
+            var viewModel = new List<VenueConcertData>();
+
+            foreach (var concert in allConcerts)
+            {
+                viewModel.Add(new VenueConcertData
+                {
+                    ConcertID = concert.ID,
+                    Name = concert.Name,
+                    IsHeld = venueConcerts.Contains(concert.ID)
+                });
+            }
+
+            ViewData["Concerts"] = viewModel;
+        }
+        private void UpdateVenueConcerts(string[] selectedConcerts, Venue venueToUpdate)
+        {
+            if (selectedConcerts == null)
+            {
+                venueToUpdate.VenueConcerts = new List<VenueConcert>();
+                return;
+            }
+
+            var selectedConcertsHS = new HashSet<string>(selectedConcerts);
+            var venueConcerts = new HashSet<int>(venueToUpdate.VenueConcerts.Select(c => c.Concert.ID));
+
+            foreach (var concert in _context.Concerts)
+            {
+                if (selectedConcertsHS.Contains(concert.ID.ToString()))
+                {
+                    if (!venueConcerts.Contains(concert.ID))
+                    {
+                        venueToUpdate.VenueConcerts.Add(new VenueConcert { VenueID = venueToUpdate.ID, ConcertID = concert.ID });
+                    }
+                }
+                else
+                {
+                    if (venueConcerts.Contains(concert.ID))
+                    {
+                        VenueConcert bookToRemove = venueToUpdate.VenueConcerts.FirstOrDefault(i => i.ConcertID == concert.ID);
+                        _context.Remove(bookToRemove);
+                    }
+                }
+            }
+        }
+
+        // POST: Publishers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Adress")] Venue venue)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Adress")] Venue venue, string[] selectedConcerts)
         {
             if (id != venue.ID)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var venueToUpdate = await _context.Venues
+                .Include(i => i.VenueConcerts)
+                    .ThenInclude(i => i.Concert)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (await TryUpdateModelAsync<Venue>(venueToUpdate, "", i => i.Name, i => i.Adress))
             {
+                UpdateVenueConcerts(selectedConcerts, venueToUpdate);
                 try
                 {
-                    _context.Update(venue);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!VenueExists(venue.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, ");
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(venue);
+
+            UpdateVenueConcerts(selectedConcerts, venueToUpdate);
+            PopulateVenueConcertData(venueToUpdate);
+
+            return View(venueToUpdate);
         }
 
         // GET: Venues/Delete/5
