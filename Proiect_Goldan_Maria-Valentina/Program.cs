@@ -14,7 +14,9 @@ builder.Services.AddDbContext<LibraryContext>(options =>
 builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+	.AddRoles<IdentityRole>()
+	.AddEntityFrameworkStores<IdentityContext>();
 
 builder.Services.Configure<IdentityOptions>(options => 
     {
@@ -25,7 +27,15 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddAuthorization(opts => { opts.AddPolicy("OnlySales", policy => { policy.RequireClaim("Department", "Sales"); }); });
 
+builder.Services.AddAuthorization(opts => { opts.AddPolicy("SalesManager", policy => { policy.RequireRole("Manager"); policy.RequireClaim("Department", "Sales"); }); });
+
+builder.Services.ConfigureApplicationCookie(opts => {
+	opts.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
+
 builder.Services.AddSignalR();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 

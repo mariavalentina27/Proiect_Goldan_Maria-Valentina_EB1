@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,8 @@ using Proiect_Goldan_Maria_Valentina.Models;
 
 namespace Proiect_Goldan_Maria_Valentina.Controllers
 {
-    public class ConcertsController : Controller
+	[Authorize(Roles = "Employee")]
+	public class ConcertsController : Controller
     {
         private readonly LibraryContext _context;
 
@@ -19,8 +21,9 @@ namespace Proiect_Goldan_Maria_Valentina.Controllers
             _context = context;
         }
 
-        // GET: Concerts
-        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
+		// GET: Concerts
+		[AllowAnonymous]
+		public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -64,8 +67,9 @@ namespace Proiect_Goldan_Maria_Valentina.Controllers
             return View(await PaginatedList<Concert>.CreateAsync(concerts.Include(b => b.Artist).AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
-        // GET: Concerts/Details/5
-        public async Task<IActionResult> Details(int? id)
+		// GET: Concerts/Details/5
+		[AllowAnonymous]
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Concerts == null)
             {
