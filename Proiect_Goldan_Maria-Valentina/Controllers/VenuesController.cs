@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Policy;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,8 @@ using Proiect_Goldan_Maria_Valentina.Models.LibraryViewModels;
 
 namespace Proiect_Goldan_Maria_Valentina.Controllers
 {
-    public class VenuesController : Controller
+	[Authorize(Policy = "OnlySales")]
+	public class VenuesController : Controller
     {
         private readonly LibraryContext _context;
 

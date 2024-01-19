@@ -16,6 +16,15 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityContext>();
 
+builder.Services.Configure<IdentityOptions>(options => 
+    {
+	    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
+	    options.Lockout.MaxFailedAccessAttempts = 3;
+	    options.Lockout.AllowedForNewUsers = false;
+    });
+
+builder.Services.AddAuthorization(opts => { opts.AddPolicy("OnlySales", policy => { policy.RequireClaim("Department", "Sales"); }); });
+
 builder.Services.AddSignalR();
 
 var app = builder.Build();
